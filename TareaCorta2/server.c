@@ -83,6 +83,7 @@ void handle_request(int sock)
                     strcat(response, start);
                     strcat(response, " - ");
                     strcat(response, end);
+                    strcat(response, "\n");
                 }
                 else
                 {
