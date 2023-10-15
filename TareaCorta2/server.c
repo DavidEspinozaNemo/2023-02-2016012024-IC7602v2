@@ -70,20 +70,23 @@ void handle_request(int sock)
             if (is_valid_ip(ip) && is_valid_mask(mask))
             {
                 get_host_range(ip, mask, start, end);
-                // snprintf(response, sizeof(response), "%s - %s\n", start, end);
+
                 // Descomponer las direcciones IP en octetos
                 int s1, s2, s3, s4, e1, e2, e3, e4;
                 sscanf(start, "%d.%d.%d.%d", &s1, &s2, &s3, &s4);
                 sscanf(end, "%d.%d.%d.%d", &e1, &e2, &e3, &e4);
+
                 // Si los primeros tres octetos de la dirección IP de inicio y fin son iguales
                 if (s1 == e1 && s2 == e2 && s3 == e3)
                 {
-                    snprintf(response, sizeof(response), "%s - %s, %d.%d.%d.{%d-%d}\n", start, end, s1, s2, s3, s4 + 1, e4 - 1);
+                    snprintf(response, sizeof(response), "%d.%d.%d.{%d-%d}\n", s1, s2, s3, s4, s4 + (e4 - s4));
+                    strcat(response, start);
+                    strcat(response, " - ");
+                    strcat(response, end);
                 }
                 else
                 {
-                    // Esto manejaría el caso (poco común) donde el rango se extiende a través de octetos
-                    snprintf(response, sizeof(response), "%s - %s\n", start, end);
+                    snprintf(response, sizeof(response), "%s - %s", start, end);
                 }
             }
             else

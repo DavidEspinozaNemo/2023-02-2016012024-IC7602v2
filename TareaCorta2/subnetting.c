@@ -2,6 +2,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdio.h>
+#include <arpa/inet.h>
 
 void convert_prefix_to_mask(int prefix, char *mask)
 {
@@ -84,10 +85,10 @@ void get_host_range(const char *ip, const char *mask, char *start, char *end)
     inet_aton(ip, &ip_addr);
     inet_aton(mask, &mask_addr);
 
-    start_addr.s_addr = (ip_addr.s_addr & mask_addr.s_addr) + 1; // +1 para excluir la dirección de red
+    start_addr.s_addr = htonl((ntohl(ip_addr.s_addr) & ntohl(mask_addr.s_addr)) + 1);
     broadcast_addr.s_addr = ip_addr.s_addr | (~mask_addr.s_addr);
-    end_addr.s_addr = broadcast_addr.s_addr - 1; // -1 para excluir la dirección de difusión
+    end_addr.s_addr = htonl(ntohl(broadcast_addr.s_addr) - 1);
 
-    strcpy(start, inet_ntoa(start_addr));
-    strcpy(end, inet_ntoa(end_addr));
+    inet_ntop(AF_INET, &start_addr, start, INET_ADDRSTRLEN);
+    inet_ntop(AF_INET, &end_addr, end, INET_ADDRSTRLEN);
 }
