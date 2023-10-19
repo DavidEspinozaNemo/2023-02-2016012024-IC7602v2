@@ -5,8 +5,6 @@
 #include <arpa/inet.h>
 #include "subnetting.c"
 
-#include "subnetting.c"
-
 #define PORT 9666
 
 void handle_request(int sock)
@@ -93,7 +91,6 @@ void handle_request(int sock)
                     snprintf(response, sizeof(response), "%s - %s", start, end);
                 }
             }
-            // else if (sscanf( aqui va la funcion de Tania
             else
             {
                 strcpy(response, "IP o máscara inválidos.\n");
@@ -108,7 +105,6 @@ void handle_request(int sock)
             if (is_valid_ip(ip) && is_valid_mask(mask))
             {
                 get_random_subnets(ip, mask, num_subnets, subnet_size);
-                // Aquí puedes hacer algo con el resultado de la función get_random_subnets si es necesario.
             }
             else
             {
