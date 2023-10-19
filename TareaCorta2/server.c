@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include "subnetting.c"
 
 #include "subnetting.h"
 
@@ -90,6 +91,7 @@ void handle_request(int sock)
                     snprintf(response, sizeof(response), "%s - %s", start, end);
                 }
             }
+            // else if (sscanf( aqui va la funcion de Tania
             else
             {
                 strcpy(response, "IP o máscara inválidos.\n");
