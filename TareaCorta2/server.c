@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include "subnetting.c"
 
-#include "subnetting.h"
+#include "subnetting.c"
 
 #define PORT 9666
 
@@ -19,6 +19,8 @@ void handle_request(int sock)
         char ip[16] = {0};
         char mask[16] = {0};
         char response[2000] = {0};
+        int  num_subnets = 0;
+        char subnet_size[16] = {0};
 
         int prefix_length = 0;
         if (sscanf(message, "GET BROADCAST IP %15s MASK /%d", ip, &prefix_length) == 2 || sscanf(message, "GET BROADCAST IP %15s MASK %15s", ip, mask) == 2)
@@ -95,6 +97,22 @@ void handle_request(int sock)
             else
             {
                 strcpy(response, "IP o máscara inválidos.\n");
+            }
+        }
+        else if (sscanf(message, "GET RANDOM SUBNETS %15s %15s %d %15s", ip, mask, &num_subnets, subnet_size) == 4)
+        {
+            if (prefix_length)
+            {
+                convert_prefix_to_mask(prefix_length, mask);
+            }
+            if (is_valid_ip(ip) && is_valid_mask(mask))
+            {
+                get_random_subnets(ip, mask, num_subnets, subnet_size);
+                // Aquí puedes hacer algo con el resultado de la función get_random_subnets si es necesario.
+            }
+            else
+            {
+                strcpy(response, "Base network o máscara inválidos.\n");
             }
         }
         else

@@ -136,10 +136,11 @@ void get_random_subnets(const char *base_network, const char *base_mask, int num
     }
 }
 
+/*
 int main()
 {
     // Ejemplo de uso de la nueva función.
     get_random_subnets("10.0.0.0", "/8", 3, "/24");
 
     return 0;
-}
+}*/
