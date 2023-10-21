@@ -136,14 +136,9 @@ void get_host_range(const char *ip, const char *mask, char *start, char *end)
     }
 }*/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
-#include <arpa/inet.h>
-
 // Función para generar subredes aleatorias manteniendo los primeros y últimos octetos.
-void get_random_subnets(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size)
+
+char *get_random_subnets(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size)
 {
     srand(time(NULL));
 
@@ -154,31 +149,54 @@ void get_random_subnets(const char *base_network, const char *base_mask, int num
     // Convierte la máscara inicial a notación de bits para determinar el tamaño.
     int base_mask_bits = 32 - __builtin_clz(ntohl(base_mask_addr.s_addr));
 
+    // Almacena las subredes en un buffer dinámico
+    char *result = malloc(2000);  // 2000 es solo un tamaño arbitrario para el buffer.
+    result[0] = '\0';  // Inicializa la cadena vacía.
+
     // Itera sobre el número deseado de subredes.
     for (int i = 0; i < num_subnets; ++i)
     {
         // Genera octetos aleatorios para los bits intermedios de la dirección de red.
-        unsigned int random_offset = rand() % (1 << (32 - base_mask_bits));
+        unsigned int random_offset = rand() % (1 << (32 - base_mask_bits - 8));
         unsigned int subnet_addr = ntohl(base_network_addr.s_addr);
-        
+
         // Aplica los octetos aleatorios y mantiene los primeros y últimos octetos.
-        subnet_addr = (subnet_addr & 0xFF000000) | ((subnet_addr + random_offset) & 0x00FFFF00) | 0x0000000A; // Aquí, 0x0000000A representa el octeto 10 en hexadecimal.
+        subnet_addr = (subnet_addr & 0xFF000000) | ((subnet_addr + random_offset) & 0x00FFFF00) | (subnet_addr & 0x000000FF);
 
         struct in_addr subnet_addr_struct;
         subnet_addr_struct.s_addr = htonl(subnet_addr);
 
-        // Imprime la subred resultante en notación de bits.
-        printf("%s/%s\n", inet_ntoa(subnet_addr_struct), subnet_size);
+        // Concatena la subred al resultado
+        char subnet_str[INET_ADDRSTRLEN + 5];  // INET_ADDRSTRLEN es el tamaño máximo para una dirección IP en formato de cadena.
+        snprintf(subnet_str, sizeof(subnet_str), "%s/%s\n", inet_ntoa(subnet_addr_struct), subnet_size);
+        strcat(result, subnet_str);
     }
+
+    return result;
 }
 
+#include <stdio.h>
 
+int main() {
+    // Supongamos que la red base es "192.168.1.0" con una máscara "/24"
+    const char *base_network = "192.168.1.0";
+    const char *base_mask = "255.255.255.0";
+    const int num_subnets = 5;
+    const char *subnet_size = "26";  // Tamaño de subred arbitrario
 
+    // Llama a la función y obtén el resultado
+    char *result = get_random_subnets(base_network, base_mask, num_subnets, subnet_size);
 
-int main()
-{
-    // Ejemplo de uso de la nueva función.
-    get_random_subnets("10.0.0.0", "/8", 5, "/24");
+    // Verifica si la llamada fue exitosa (result no es NULL)
+    if (result != NULL) {
+        // Imprime el resultado
+        printf("Subredes generadas:\n%s", result);
+
+        // Libera la memoria asignada dinámicamente
+        free(result);
+    } else {
+        fprintf(stderr, "Error al generar subredes.\n");
+    }
 
     return 0;
 }
