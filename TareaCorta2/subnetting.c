@@ -109,7 +109,7 @@ void get_host_range(const char *ip, const char *mask, char *start, char *end)
 
 // Obtiene subredes aleatorias dado un número de red, una máscara inicial,
 // el número total de subredes y el tamaño de cada subred.
-void get_random_subnets(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size)
+/*void get_random_subnets(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size)
 {
     // Inicializa el generador de números aleatorios con la hora actual.
     srand(time(NULL));
@@ -134,13 +134,51 @@ void get_random_subnets(const char *base_network, const char *base_mask, int num
         // Imprime la subred resultante en notación de bits.
         printf("%s/%s\n", inet_ntoa(subnet_addr_struct), subnet_size);
     }
+}*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+// Función para generar subredes aleatorias manteniendo los primeros y últimos octetos.
+void get_random_subnets(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size)
+{
+    srand(time(NULL));
+
+    struct in_addr base_network_addr, base_mask_addr;
+    inet_aton(base_network, &base_network_addr);
+    inet_aton(base_mask, &base_mask_addr);
+
+    // Convierte la máscara inicial a notación de bits para determinar el tamaño.
+    int base_mask_bits = 32 - __builtin_clz(ntohl(base_mask_addr.s_addr));
+
+    // Itera sobre el número deseado de subredes.
+    for (int i = 0; i < num_subnets; ++i)
+    {
+        // Genera octetos aleatorios para los bits intermedios de la dirección de red.
+        unsigned int random_offset = rand() % (1 << (32 - base_mask_bits));
+        unsigned int subnet_addr = ntohl(base_network_addr.s_addr);
+        
+        // Aplica los octetos aleatorios y mantiene los primeros y últimos octetos.
+        subnet_addr = (subnet_addr & 0xFF000000) | ((subnet_addr + random_offset) & 0x00FFFF00) | 0x0000000A; // Aquí, 0x0000000A representa el octeto 10 en hexadecimal.
+
+        struct in_addr subnet_addr_struct;
+        subnet_addr_struct.s_addr = htonl(subnet_addr);
+
+        // Imprime la subred resultante en notación de bits.
+        printf("%s/%s\n", inet_ntoa(subnet_addr_struct), subnet_size);
+    }
 }
 
-/*
+
+
+
 int main()
 {
     // Ejemplo de uso de la nueva función.
-    get_random_subnets("10.0.0.0", "/8", 3, "/24");
+    get_random_subnets("10.0.0.0", "/8", 5, "/24");
 
     return 0;
-}*/
+}
