@@ -175,6 +175,7 @@ char *get_random_subnets(const char *base_network, const char *base_mask, int nu
     return result;
 }
 
+/*
 #include <stdio.h>
 
 int main() {
@@ -199,4 +200,4 @@ int main() {
     }
 
     return 0;
-}
+}*/

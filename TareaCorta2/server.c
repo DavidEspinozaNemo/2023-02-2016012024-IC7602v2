@@ -96,15 +96,19 @@ void handle_request(int sock)
                 strcpy(response, "IP o máscara inválidos.\n");
             }
         }
-        else if (sscanf(message, "GET RANDOM SUBNETS %15s %15s %d %15s", ip, mask, &num_subnets, subnet_size) == 4)
+        else if (sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK %15s NUMBER %d SIZE %15s", ip, mask, &num_subnets, subnet_size) == 4 ||
+         sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK /%15s NUMBER %d SIZE /%15s", ip, mask, &num_subnets, subnet_size) == 4)
         {
-            if (prefix_length)
+            printf("IP: %d\n", is_valid_ip(ip));
+            printf("MASK: %d\n", is_valid_mask(mask));
+           
+            if (is_valid_ip(ip))
             {
-                convert_prefix_to_mask(prefix_length, mask);
-            }
-            if (is_valid_ip(ip) && is_valid_mask(mask))
-            {
-                get_random_subnets(ip, mask, num_subnets, subnet_size);
+                char *random_subnets = get_random_subnets(ip, mask, num_subnets, subnet_size);
+                send(sock, random_subnets, strlen(random_subnets), 0);
+                free(random_subnets);  // Liberar la memoria asignada dinámicamente.
+                strcat(response,"\n");
+                strcpy(response, &random_subnets);
             }
             else
             {
