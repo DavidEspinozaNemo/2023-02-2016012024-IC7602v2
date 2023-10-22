@@ -147,7 +147,7 @@ char *get_random_subnet(const char *base_network, const char *base_mask, int num
     return result;
 }
 
-
+/*
 int main()
 {
     // Prueba 1
@@ -182,3 +182,4 @@ int main()
 
     return 0;
 }
+*/
