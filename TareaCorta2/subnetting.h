@@ -9,6 +9,6 @@ void get_broadcast_address(const char *ip, const char *mask, char *broadcast);
 void get_network_address(const char *ip, const char *mask, char *network);
 void get_host_range(const char *ip, const char *mask, char *start, char *end);
 void convert_prefix_to_mask(int prefix, char *mask);
-char *get_random_subnets(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size);
+char *get_random_subnet(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size);
 
 #endif // SUBNETTING_H

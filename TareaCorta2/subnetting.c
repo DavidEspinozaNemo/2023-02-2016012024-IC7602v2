@@ -111,7 +111,6 @@ void get_host_range(const char *ip, const char *mask, char *start, char *end)
 // Obtiene subredes aleatorias dado un número de red, una máscara inicial,
 // el número total de subredes y el tamaño de cada subred.
 
-
 char *get_random_subnet(const char *base_network, const char *base_mask, int num_subnets, const char *subnet_size)
 {
     srand(time(NULL));
