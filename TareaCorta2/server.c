@@ -97,8 +97,15 @@ void handle_request(int sock)
                 strcpy(response, "IP o máscara inválidos.\n");
             }
         }
-     else if (sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK %15s NUMBER %d SIZE %d", ip, mask, &num_subnets, subnet_size) == 4 )
+     else if (sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK %15s NUMBER %d SIZE /%15s", ip, mask, &num_subnets, subnet_size) == 4 ||
+     sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK /%d NUMBER %d SIZE /%15s", ip, &prefix_length, &num_subnets, subnet_size) == 4 )
         {
+
+            if (prefix_length)
+            {
+                convert_prefix_to_mask(prefix_length, mask);
+                printf("Variables prefix, mask: %d, %15s", prefix_length, mask );
+            }
 
             printf("Subnet_size: %s\n", subnet_size);
             printf("Mask: %s\n", mask);
