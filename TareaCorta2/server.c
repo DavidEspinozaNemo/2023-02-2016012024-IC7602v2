@@ -97,27 +97,23 @@ void handle_request(int sock)
                 strcpy(response, "IP o máscara inválidos.\n");
             }
         }
-        else if (sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK %15s NUMBER %d SIZE /%15s", ip, mask, &num_subnets, subnet_size) == 4 ||
-         sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK /%15s NUMBER %d SIZE /%15s", ip, &prefix_length, &num_subnets, subnet_size) == 4)
+     else if (sscanf(message, "GET RANDOM SUBNETS NETWORK NUMBER %15s MASK %15s NUMBER %d SIZE %d", ip, mask, &num_subnets, subnet_size) == 4 )
         {
-            if (prefix_length)
-            {
-                convert_prefix_to_mask(prefix_length, mask);
-            }
-            
-            if (is_valid_ip(ip))
-            {
-                char *random_subnets = get_random_subnet(ip, mask, num_subnets, subnet_size);
-                send(sock, random_subnets, strlen(random_subnets), 0);
-                free(random_subnets);  // Liberar la memoria asignada dinámicamente.
-                strcat(response,"\n");
-                strcpy(response, &random_subnets);
-            }
-            else
-            {
-                strcpy(response, "Base network o máscara inválidos.\n");
-            }
+
+            printf("Subnet_size: %s\n", subnet_size);
+            printf("Mask: %s\n", mask);
+            printf("Ip: %s\n", ip);
+            char *random_subnets = get_random_subnet(ip, mask, num_subnets, subnet_size);
+
+            // Concatenar al response
+            strcat(response, random_subnets);
+
+            // Liberar la memoria asignada dinámicamente.
+            free(random_subnets);
+            strcat(response, "\n");  // Agregar un salto de línea después de las subredes.
+
         }
+
         else
         {
             strcpy(response, "Petición inválida.\n");
