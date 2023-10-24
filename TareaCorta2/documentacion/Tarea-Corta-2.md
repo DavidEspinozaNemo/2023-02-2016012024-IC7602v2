@@ -1,3 +1,5 @@
+![Imagen de Portada](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\Portada.png)
+
 # Tarea Corta 2
 
 ## Escuela de Ingeniería en Computación
@@ -15,7 +17,7 @@ David Jose Espinoza Soto - 2016012024
 
 
 
-**Fecha de entrega: Martes 17 de octubre del 2023**
+**Fecha de entrega: Martes 24 de octubre del 2023**
 
 ## Introducción
 
@@ -48,16 +50,62 @@ En resumen, este proyecto combina programación en C, conocimientos en redes y c
 Para instalar la tarea corta siga los siguientes comandos:
 
 - Descargar los archivo del link: https://github.com/DavidEspinozaNemo/2023-02-2016012024-IC7602v2/tree/main/TareaCorta2
+- Descargar los archivo del repositorio de git hub https://github.com/DavidEspinozaNemo/2023-02-2016012024-IC7602v2/tree/dev/TareaCorta2
+- Iniciar sesión con docker
+  docker login
+- Crear una imagen en docker
+  docker build --tag tc2 .
+- Crear un nuevo tag para la imagen
+  docker tag tc2:latest daespinoza/tc2:latest
+- Realizar el push de la imagen a docker hub
+  docker push user/tc2:latest
+- Crear el paquete con helm
+  helm package ./tc2
+- Instalar el paquete
+  helm install --generate-name  ./tc2-0.1.0.tgz
+- Listar los pods (se listan para verificar el número de réplicas especificado y tomar el valor de una de las instancias para levantar la conexión)
+  kubectl get pods
+- Habilitar el puerto 9666 en localhost para el pod especificado
+  kubectl port-forward tc2-deployment-5759db799d-jwdzp 9666:9666
+- Abrir una nueva terminal para probar el funcionamiento por medio del servicio de telnet
+  telnet localhost 9666
+- Ingresar las distintas instrucciones de prueba por medio de telnet para esperar recibir la respuesta a la petición enviada
+  Ejemplo: GET BROADCAST IP 10.8.2.5 MASK /29
 
 ## Pruebas de las funciones
 
+El inicio de los pods:
+
+![Prueba de la inicialización de los pods](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\inicio-pods.png)
+
+![Inicio del servicio](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\inicio-servicio.png)
+
+El inicio del telnet:
+
+![inicio del telnet](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\inicio-telnet.png)
+
 GET BROADCAST IP
+
+![Prueba 1](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\prueba1.png)
 
 GET NETWORK NUMBER
 
+![Preuba 2](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\prueba2.png)
+
 GET HOSTS RANGE
 
+![Preuba 3](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\prueba3.png)
+
 GET RANDOM SUBNETS NETWORK NUMBER
+
+![Prueba 4](C:\Users\david\OneDrive\Escritorio\2023-02-2016012024-IC7602v2\TareaCorta2\documentacion\prueba4.png)
+
+Notas: esta función tiene un bug, funciona mal las primeras veces pero luego arregla sola como se ve en la imagen, tal vez sea porque envía la respuesta como una cadena de caracteres y la información se altera en el camino.
+
 ## Referencias
 
-- https://youtu.be/5-Qcig2_8xo
+- Gómez, S. (2022) Crear imágenes propias, Crear imágenes propias - Taller de Docker. Available at: https://aulasoftwarelibre.github.io/taller-de-docker/dockerfile/ (Accessed: 16 October 2023).
+  Installing Helm (no date) Helm. Available at: https://helm.sh/docs/intro/install/ (Accessed: 16 October 2023).
+- kubernetes team (2023) Instalar y Configurar Kubectl en Linux, Kubernetes. Available at: https://kubernetes.io/es/docs/tasks/tools/included/install-kubectl-linux/ (Accessed: 15 October 2023).
+- NullSafe Architect (2020) Helm, El Gestor de Paquetes Para Kubernetes: De 0 a empaquetar aplicaciones en un solo vídeo[brutal], YouTube. Available at: https://youtu.be/5-Qcig2_8xo (Accessed: 15 October 2023).
+- Quickstart Guide (no date) Helm. Available at: https://helm.sh/docs/intro/quickstart/ (Accessed: 16 October 2023). 
