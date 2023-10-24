@@ -1,6 +1,6 @@
 FROM gcc:4.9
-WORKDIR /server
+WORKDIR /
 EXPOSE 9666
-COPY server/. .
-RUN gcc -std=c99 -o server2 server.c
-CMD ["./server2"]
+COPY /. .
+RUN gcc -std=c99 -o server server.c
+CMD ["./server"]

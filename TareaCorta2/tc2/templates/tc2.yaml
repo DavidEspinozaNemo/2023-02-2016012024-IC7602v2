@@ -16,9 +16,11 @@ spec:
     spec:
       containers:
       - name: tc2
-        image: sebasdiaz01/tc2
-      ports:
+        image: daespinoza/tc2
+        ports:
         - name: http
           protocol: TCP
-          port: 80
-          targetPort: 9666
+          containerPort: 80
+        - name: custom
+          protocol: TCP
+          containerPort: 9666
